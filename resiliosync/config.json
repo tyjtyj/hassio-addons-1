@@ -1,6 +1,6 @@
 {
   "name": "ResilioSync",
-  "version": "2.7.2.1375",
+  "version": "2.7.2.1375-2",
   "upstream": "2.7.2.1375",
   "slug": "resiliosync",
   "description": "Self-hosted file share and collaboration platform on the web",
@@ -17,14 +17,19 @@
     "55555/tcp": "Sync Port"
   },
   "map": [
-    "share:rw"
+    "share:rw", 
+    "config:rw"
   ],
   "environment": {
-    "PUID": "1000",
-    "GUID": "1000"
   },
-  "options": {},
-  "schema": {},
+  "options": {
+    "PUID": 0,
+    "PGID": 0
+  },
+  "schema": {
+    "PUID": "int",
+    "PGID": "int"
+  },
   "arch": [
     "aarch64",
     "amd64",
