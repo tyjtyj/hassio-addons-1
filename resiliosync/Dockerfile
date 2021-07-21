@@ -4,14 +4,19 @@ ARG BUILD_UPSTREAM="2.7.2.1375"
 FROM ${BUILD_FROM}${BUILD_UPSTREAM}
 
 RUN \
-    ##################
-    # Install bashio #
-    ##################
-    apk add --no-cache \
+    ################
+    # Install apps #
+    ################
+    apt-get update \
+    && apt-get install -y --no-install-recommends \
     jq \
     curl \
     cifs-utils \
+    keyutils \
     \
+    ##################
+    # Install bashio #
+    ##################
     && curl -J -L -o /tmp/bashio.tar.gz \
     "https://github.com/hassio-addons/bashio/archive/v0.13.0.tar.gz" \
     && mkdir /tmp/bashio \
@@ -33,14 +38,14 @@ RUN \
     && sed -i 's/{PGID:-911}/(bashio::config "PGID")/g' /etc/cont-init.d/10-adduser \
     \
     # Correct config folder
-    && grep -rl " /config" /etc/cont-init.d | xargs sed -i 's| /config| /config/resiliosync|g' \
-    && grep -rl " /config" /etc/services.d | xargs sed -i 's| /config| /config/resiliosync|g' \
-    && sed -i 's=/config/resiliosync=/config/resiliosync || true=g' /etc/cont-init.d/10-adduser \
+    && grep -rl " /config" /etc/cont-init.d | xargs sed -i 's| /config| /config/resiliosync|g' || true \
+    && grep -rl " /config" /etc/services.d | xargs sed -i 's| /config| /config/resiliosync|g' || true \
+    && sed -i 's=/config/resiliosync=/config/resiliosync || true=g' /etc/cont-init.d/10-adduser || true \
     \
     # Correct sync folder
-    && grep -rl "/sync/" /etc/cont-init.d | xargs sed -i 's|/sync/|/share/resiliosync|g' \
-    && grep -rl " /sync" /etc/cont-init.d | xargs sed -i 's| /sync| /share/resiliosync|g' \
-    && sed -i 's=/sync/=/share/resiliosync/=g' /defaults
+    && grep -rl "/sync/" /etc/cont-init.d | xargs sed -i 's|/sync/|/share/resiliosync|g' || true \
+    && grep -rl " /sync" /etc/cont-init.d | xargs sed -i 's| /sync| /share/resiliosync|g' || true \
+    && sed -i 's=/sync/=/share/resiliosync/=g' /defaults || true
 
 VOLUME [ "/data" ]
 
